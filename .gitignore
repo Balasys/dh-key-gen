@@ -1,0 +1,7 @@
+*.orig
+*.rej
+
+*.swo
+*.swp
+
+/build
