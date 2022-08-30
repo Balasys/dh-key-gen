@@ -7,6 +7,8 @@ cryptographic libraries are supported:
 * OpenSSL 1.0
 * OpenSSL 1.1
 * OpenSSL 3.0
+* BoringSSL
+* LibreSSL
 
 ## Building
 
@@ -27,6 +29,23 @@ make -j build_crypto
 make -j build_libs
 ```
 
+#### BoringSSL
+
+```
+mkdir build
+cd build
+cmake -DBUILD_SHARED_LIBS=1 ..
+make crypto
+```
+
+#### LibreSSL
+
+```
+./autogen.sh
+./configure
+make
+```
+
 ### Tool
 
 ```
@@ -36,6 +55,8 @@ $ cmake \
   -DOPENSSL_1_0_SOURCE_PATH=/path/to/compiled/openssl1_0/source/ \
   -DOPENSSL_1_1_SOURCE_PATH=/path/to/compiled/openssl1_1/source/ \
   -DOPENSSL_3_0_SOURCE_PATH=/path/to/compiled/openssl3_0/source/ \
+  -DBORINGSSL_SOURCE_PATH=/path/to/compiled/boringssl/source/ \
+  -DLIBRESSL_SOURCE_PATH=/path/to/compiled/libressl/source \
   ..
 $ make
 ```
