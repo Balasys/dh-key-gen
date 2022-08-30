@@ -7,6 +7,8 @@ cryptographic libraries are supported:
 * OpenSSL 1.0
 * OpenSSL 1.1
 * OpenSSL 3.0
+* BoringSSL
+* LibreSSL
 
 ## Usage
 
@@ -19,6 +21,8 @@ $ cmake \
   -DOPENSSL_1_0_SOURCE_PATH=/path/to/compiled/boringssl/source/ \
   -DOPENSSL_1_1_SOURCE_PATH=/path/to/compiled/boringssl/source/ \
   -DOPENSSL_3_0_SOURCE_PATH=/path/to/compiled/boringssl/source/ \
+  -DBORINGSSL_SOURCE_PATH=/path/to/compiled/boringssl/source/ \
+  -DLIBRESSL_SOURCE_PATH=/path/to/compiled/libressl/source \
   ..
 $ make
 ```
