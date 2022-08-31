@@ -9,6 +9,8 @@ cryptographic libraries are supported:
 * OpenSSL 3.0
 * BoringSSL
 * LibreSSL
+* wolfSSL
+* mbedTLS
 
 ## Usage
 
