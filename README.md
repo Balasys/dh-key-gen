@@ -9,6 +9,8 @@ cryptographic libraries are supported:
 * OpenSSL 3.0
 * BoringSSL
 * LibreSSL
+* wolfSSL
+* mbedTLS
 
 ## Building
 
@@ -43,6 +45,14 @@ make crypto
 ```
 ./autogen.sh
 ./configure
+make
+```
+
+#### WolfSSL
+
+```
+./autogen.sh
+./configure --enable-opensslall --with-max-rsa-bits=8192
 make
 ```
 
