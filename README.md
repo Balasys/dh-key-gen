@@ -11,6 +11,8 @@ cryptographic libraries are supported:
 * LibreSSL
 * wolfSSL
 * mbedTLS
+* NSS
+* GnuTLS
 
 ## Usage
 
@@ -25,6 +27,8 @@ $ cmake \
   -DOPENSSL_3_0_SOURCE_PATH=/path/to/compiled/boringssl/source/ \
   -DBORINGSSL_SOURCE_PATH=/path/to/compiled/boringssl/source/ \
   -DLIBRESSL_SOURCE_PATH=/path/to/compiled/libressl/source \
+  -DNSS_SOURCE_PATH=/path/to/compiled/libressl/source \
+  -DGNUTLS_SOURCE_PATH=/path/to/compiled/libressl/source \
   ..
 $ make
 ```
