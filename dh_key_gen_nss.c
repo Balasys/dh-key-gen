@@ -60,5 +60,10 @@ DH_key_gen_generate_keypair(void *_dh, long priv_length) {
   if (DH_NewKey(dh_params, &dh_privkey) != SECSuccess)
     return -1;
 
+  if (DH_Derive(&dh_privkey->publicValue, &dh_privkey->prime, &dh_privkey->privateValue, &secret, 0) != SECSuccess)
+    return -1;
+
+  free(secret.data);
+
   return dh_privkey->privateValue.len * 8;
 }

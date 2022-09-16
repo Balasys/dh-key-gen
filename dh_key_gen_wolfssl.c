@@ -55,6 +55,9 @@ DH_key_gen_generate_keypair(void *_dh) {
   if (wolfSSL_DH_generate_key(dh) == 0)
     return -1;
 
+  if (wolfSSL_DH_compute_key(key, dh->priv_key, dh) == 0)
+    return -1;
+
   return wolfSSL_BN_num_bits(dh->priv_key);
 }
 
