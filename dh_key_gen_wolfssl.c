@@ -37,6 +37,53 @@ fail:
   return NULL;
 }
 
+void *
+DH_key_gen_new_from_file(const char *dh_param_file_path, long priv_length) {
+  FILE *dh_param_file;
+  static unsigned char dh_param_file_content[16 * 1024];
+  DerBuffer *der_buffer;
+  WOLFSSL_DH *dh;
+
+  dh_param_file = fopen(dh_param_file_path, "r");
+  if (dh_param_file == NULL)
+    goto fail;
+
+  fseek(dh_param_file, 0, SEEK_END);
+  unsigned long dh_param_file_size = ftell(dh_param_file);
+  if (dh_param_file_size > sizeof(dh_param_file_content) / sizeof(*dh_param_file_content))
+    goto fail;
+
+  fseek(dh_param_file, 0, SEEK_SET);
+  fread(&dh_param_file_content, dh_param_file_size, 1, dh_param_file);
+  fclose(dh_param_file);
+
+  int dh_param_der_size = wc_PemToDer(
+    dh_param_file_content,
+    sizeof(dh_param_file_content) / sizeof(*dh_param_file_content),
+    DH_PARAM_TYPE,
+    &der_buffer,
+    NULL,
+    NULL,
+    NULL
+  );
+  if (dh_param_der_size < 0)
+    goto fail;
+
+  dh = wolfSSL_d2i_DHparams(&dh, (const unsigned char **)&der_buffer->buffer, der_buffer->length);
+  if (dh == NULL)
+    goto fail;
+
+  if (priv_length && !wolfSSL_DH_set_length(dh, priv_length))
+    goto fail;
+
+  return dh;
+
+fail:
+  wolfSSL_DH_free(dh);
+
+  return NULL;
+}
+
 void
 DH_key_gen_free(void *_dh) {
   WOLFSSL_DH *dh = (WOLFSSL_DH *) _dh;

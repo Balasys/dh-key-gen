@@ -49,6 +49,11 @@ fail:
   return NULL;
 }
 
+void *
+DH_key_gen_new_from_file() {
+  return NULL;
+}
+
 void
 DH_key_gen_free(void *_dh) {
   DHParams *dh_params = (DHParams *) _dh;

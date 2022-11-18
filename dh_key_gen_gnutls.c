@@ -125,6 +125,54 @@ extern gnutls_crypto_pk_st _gnutls_pk_ops;
 
 bool DH_key_gen_init() { return true; }
 
+void *DH_key_gen_new_from_file(const char *dh_param_file_path, long priv_length) {
+  FILE *dh_param_file;
+  static unsigned char dh_param_file_content[16 * 1024];
+
+  dh_param_file = fopen(dh_param_file_path, "r");
+  if (dh_param_file == NULL)
+    goto fail;
+
+  fseek(dh_param_file, 0, SEEK_END);
+  unsigned long dh_param_file_size = ftell(dh_param_file);
+  if (dh_param_file_size > sizeof(dh_param_file_content) / sizeof(*dh_param_file_content))
+    goto fail;
+
+  fseek(dh_param_file, 0, SEEK_SET);
+  fread(dh_param_file_content, dh_param_file_size, 1, dh_param_file);
+  fclose(dh_param_file);
+
+  gnutls_datum_t dh_param = { dh_param_file_content, dh_param_file_size };
+  gnutls_dh_params_t dh = NULL;
+  if (gnutls_dh_params_init(&dh) != 0)
+    goto fail;
+
+  if (gnutls_dh_params_import_pkcs3(dh, &dh_param, GNUTLS_X509_FMT_PEM) < 0)
+    goto fail;
+
+  gnutls_datum_t p, g;
+  unsigned int bits;
+
+  if (gnutls_dh_params_export_raw(dh, &p, &g, &bits))
+    goto fail;
+
+  if (gnutls_dh_params_init(&dh) != 0)
+    goto fail;
+
+  if (gnutls_dh_params_import_raw2(dh, &p, &g, priv_length ? priv_length : bits) != 0)
+    goto fail;
+
+  return dh;
+
+fail:
+  if (dh_param_file)
+    fclose(dh_param_file);
+
+  gnutls_dh_params_deinit(dh);
+
+  return NULL;
+}
+
 void *
 DH_key_gen_new_from_params(const unsigned char *p, const unsigned char g, long pub_length, long priv_length) {
   gnutls_dh_params_t dh = NULL;

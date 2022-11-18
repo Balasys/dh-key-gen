@@ -58,6 +58,25 @@ fail:
   return NULL;
 }
 
+void *
+DH_key_gen_new_from_file(const char *dh_param_file_path, long /* priv_length */) {
+  mbedtls_dhm_context *dh;
+
+  dh = malloc(sizeof(mbedtls_dhm_context));
+  if (dh == NULL)
+    return NULL;
+
+  mbedtls_dhm_init(dh);
+
+  int rc = mbedtls_dhm_parse_dhmfile(dh, dh_param_file_path);
+  if (rc == 0)
+    return dh;
+
+  mbedtls_dhm_free(dh);
+
+  return NULL;
+}
+
 void
 DH_key_gen_free(void *_dh) {
   mbedtls_dhm_context *dh = (mbedtls_dhm_context *) _dh;
