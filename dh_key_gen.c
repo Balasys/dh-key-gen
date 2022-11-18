@@ -9,10 +9,12 @@
 
 
 void
-handle_argument_error(const char *arg_name)
+handle_argument_error(const char *arg_name, const char *error_msg)
 {
   if (arg_name)
     fprintf(stderr, "Wrong value for %s. ", arg_name);
+  if (error_msg)
+    fprintf(stderr, "%s ", error_msg);
 
   fprintf(stderr, "%s\n",
     "Usage: dh_key_gen_lib_postfix "
@@ -73,7 +75,7 @@ main (int argc, char **argv)
           break;
 
         case '?':
-          handle_argument_error(NULL);
+          handle_argument_error(NULL, "Unknown argument.");
           break;
 
         default:
@@ -82,11 +84,11 @@ main (int argc, char **argv)
     }
 
   if (param_type == NULL)
-    handle_argument_error("param-type");
+    handle_argument_error("param-type", "Argument param-type is required.");
   if (param_size == 0)
-    handle_argument_error("param-size");
+    handle_argument_error("param-size", "Argument param-size is required.");
   if (count == 0)
-    handle_argument_error("count");
+    handle_argument_error("count", "Argument count is required.");
 
   char *dhparam_name[11];
   snprintf((char *) dhparam_name, sizeof(dhparam_name), "%s%ld", param_type, param_size);
@@ -100,7 +102,7 @@ main (int argc, char **argv)
   }
 
   if (chosen_dhparam == NULL)
-    handle_argument_error("param-type or param-size");
+    handle_argument_error("param-type or param-size", "Unknown param-type and param-type combination.");
 
   if (log_flag)
     fprintf(stderr, "Generating DH public key %ld time(s) using public parameters %s", count, chosen_dhparam->name);
