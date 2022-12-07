@@ -146,10 +146,13 @@ main (int argc, char **argv)
       return 1;
     }
 
-    const clock_t start_time = clock();
+    struct timespec start_time;
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
     int priv_key_size_actual = DH_key_gen_generate_public_key(dh, priv_key_size);
-    const clock_t end_time = clock();
-    total_time += ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+    struct timespec end_time;
+    clock_gettime(CLOCK_MONOTONIC, &end_time);
+    total_time += (end_time.tv_nsec - start_time.tv_nsec);
+    total_time += (end_time.tv_sec - start_time.tv_sec) * 1e9;
 
     if (priv_key_size_actual < 0) {
       if (log_flag)
@@ -163,7 +166,8 @@ main (int argc, char **argv)
     DH_key_gen_free(dh);
   }
 
-  printf("Key generation speed: %12.6f ops/s\n", count / total_time);
+  printf("Key generation speed: %12.6f ops/s\n", count / (total_time / 1e9));
+
 
   return 0;
 }
